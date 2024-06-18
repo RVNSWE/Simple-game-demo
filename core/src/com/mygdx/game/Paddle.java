@@ -10,11 +10,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * @version 18/06/2024
  */
 public class Paddle {
-    private float x;
-    private float y;
-    private float width;
-    private float height;
+    /**
+     * Declare class attributes.
+     */
+    private float x; // An x position.
+    private float y; // A y position.
+    private float width; // The width of a shape in pixels.
+    private float height; // The height of a shape in pixels.
 
+    /**
+     * Constructor for Paddle objects. Sets initial object attribute values.
+     *
+     * @param x the initial x position.
+     * @param y the initial y position.
+     * @param width the width of the object.
+     * @param height the height of the object.
+     */
     public Paddle(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
@@ -22,10 +33,22 @@ public class Paddle {
         this.height = height;
     }
 
+    /**
+     * Update the x position of the Paddle object to equal the position of
+     * the cursor in pixels minus half the object's width (to position the
+     * middle of the object at the x position of the cursor).
+     */
     public void update() {
         x = Gdx.input.getX() - (width / 2);
     }
 
+    /**
+     * Create the rectangle shape that will represent the paddle, with the
+     * initial x position, y position, width and height set by the Paddle
+     * constructor.
+     *
+     * @param shape the shape to be created.
+     */
     public void draw(ShapeRenderer shape) {
         shape.rect(x, y, width, height);
     }
