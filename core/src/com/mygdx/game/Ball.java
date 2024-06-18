@@ -68,51 +68,45 @@ public class Ball {
     }
 
     /**
-     * Check whether the paddle has collided with the ball and set its colour
-     * to green if it has, otherwise it is set to white.
+     * Get the x position.
      *
-     * @param paddle the paddle.
+     * @return the x position.
      */
-    public void checkCollision(Paddle paddle) {
-        if (collidesWith(paddle)) {
-            colour = Color.GREEN;
-        }
-        else {
-            colour = Color.WHITE;
-        }
-    }
-
     public int getX() {
         return x;
     }
 
+    /**
+     * Get the y position.
+     *
+     * @return the y position.
+     */
     public int getY() {
         return y;
     }
 
     /**
-     * Generate a random number greater than 0.5 if the paddle collides with
-     * the ball.
+     * Get the ball's size.
      *
-     * @param paddle the paddle.
-     * @return true if a collision has happened and false if not.
+     * @return the ball's size.
      */
-    private boolean collidesWith(Paddle paddle) {
-        boolean collision = true;
+    public int getSize() {
+        return size;
+    }
 
-        if ((this.getX() + size) < (paddle.getX())) {
-            return false;
-        }
-        if ((this.getX() - size) > (paddle.getX() + paddle.getWidth())) {
-            return false;
-        }
-        if ((this.getY() + size) < (paddle.getY())) {
-            return false;
-        }
-        if ((this.getY() - size) > (paddle.getY() + paddle.getHeight())) {
-            return false;
-        }
+    /**
+     * Get the y-axis speed.
+     *
+     * @return the y-axis speed.
+     */
+    public int getYSpeed() {
+        return ySpeed;
+    }
 
-        return collision;
+    /**
+     * Set the y-axis speed.
+     */
+    public void setYSpeed(int ySpeed) {
+        this.ySpeed = ySpeed;
     }
 }
