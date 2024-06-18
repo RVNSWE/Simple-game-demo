@@ -3,12 +3,19 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+/**
+ * A ball that moves across the screen in random direction with a random velocity
+ * and bounces off each edge of the screen to move in the opposite direction.
+ *
+ * @author Katherine Town
+ * @version 18/06/2024
+ */
 public class Ball {
-    int x;
-    int y;
-    int size;
-    int xSpeed;
-    int ySpeed;
+    private int x;
+    private int y;
+    private int size;
+    private int xSpeed;
+    private int ySpeed;
 
     public Ball(int x, int y, int size, int xSpeed, int ySpeed) {
         this.x = x;
@@ -20,10 +27,10 @@ public class Ball {
     public void update() {
         x += xSpeed;
         y += ySpeed;
-        if (x < 0 || x > Gdx.graphics.getWidth()) {
+        if (x < size || x > (Gdx.graphics.getWidth() - size)) {
             xSpeed = -xSpeed;
         }
-        if (y < 0 || y > Gdx.graphics.getHeight()) {
+        if (y < size || y > (Gdx.graphics.getHeight() - size)) {
             ySpeed = -ySpeed;
         }
     }
