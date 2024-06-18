@@ -34,12 +34,15 @@ public class Paddle {
     }
 
     /**
-     * Update the x position of the Paddle object to equal the position of
-     * the cursor in pixels minus half the object's width (to position the
-     * middle of the object at the x position of the cursor).
+     * Update the x position of the centre of the Paddle object to match the
+     * x position of the cursor. The cursor is drawn from the top of the
+     * screen and the paddle from the bottom, therefore the cursor position
+     * must be subtracted from the window height to set the paddle's y
+     * position.
      */
     public void update() {
         x = Gdx.input.getX() - (width / 2);
+        y = Gdx.graphics.getHeight() - (Gdx.input.getY() + (height / 2));
     }
 
     /**
@@ -51,5 +54,41 @@ public class Paddle {
      */
     public void draw(ShapeRenderer shape) {
         shape.rect(x, y, width, height);
+    }
+
+    /**
+     * Get the paddle x position.
+     *
+     * @return the x position.
+     */
+    public float getX() {
+        return x;
+    }
+
+    /**
+     * Get the paddle y position.
+     *
+     * @return the y position.
+     */
+    public float getY() {
+        return y;
+    }
+
+    /**
+     * Get the paddle width.
+     *
+     * @return the paddle width.
+     */
+    public float getWidth() {
+        return width;
+    }
+
+    /**
+     * Get the paddle height.
+     *
+     * @return the paddle height.
+     */
+    public float getHeight() {
+        return height;
     }
 }

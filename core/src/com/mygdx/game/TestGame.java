@@ -59,6 +59,7 @@ public class TestGame extends ApplicationAdapter {
 
 		ball.update(); // Update the state and location of the ball.
 		shape.begin(ShapeRenderer.ShapeType.Filled); // Begin drawing.
+		ball.checkCollision(paddle); // Check whether the ball and paddle have collided.
 		ball.draw(shape); // Draw the ball.
 		shape.end(); // Stop drawing.
 
