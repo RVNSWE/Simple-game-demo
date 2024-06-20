@@ -9,10 +9,11 @@ import com.badlogic.gdx.graphics.GL20;
 import java.util.ArrayList;
 import java.util.Random;
 
-// https://colourtann.github.io/HelloLibgdx/3.html
-
 /**
  * This class creates the objects in the game and renders them to the screen.
+ * Based on tutorial from https://colourtann.github.io/HelloLibgdx/index.html.
+ * Project development after implementation of collision detection and brick
+ * destruction was entirely the work of the author.
  *
  * @author Katherine Town
  * @version 18/06/2024
@@ -51,9 +52,9 @@ public class TestGame extends ApplicationAdapter {
 		// Create the ball.
 		ball = new Ball((Gdx.graphics.getWidth() / 2), // x-origin in the centre of the window,
 				30, // y-origin in the centre of the window,
-				20, // a radius of 20px,
+				10, // a radius of 20px,
 				r.nextInt(-10, 10), // xSpeed between -10 and 10px per frame,
-				r.nextInt( 10)); // ySpeed 10px per frame.
+				r.nextInt( 5, 10)); // ySpeed 10px per frame.
 
 		// Create the paddle and bricks.
 		rectangles.add(new Rectangle(0, 10, 100, 10));
@@ -121,16 +122,10 @@ public class TestGame extends ApplicationAdapter {
 	private boolean collidesWith(Rectangle rectangle) {
 		boolean collision = true;
 
-		if ((ball.getX() + ball.getSize()) < (rectangle.getX())) {
-			return false;
-		}
-		if ((ball.getX() - ball.getSize()) > (rectangle.getX() + rectangle.getWidth())) {
-			return false;
-		}
-		if ((ball.getY() + ball.getSize()) < (rectangle.getY())) {
-			return false;
-		}
-		if ((ball.getY() - ball.getSize()) > (rectangle.getY() + rectangle.getHeight())) {
+		if (((ball.getX() + ball.getSize()) < (rectangle.getX()))
+		|| ((ball.getX() - ball.getSize()) > (rectangle.getX() + rectangle.getWidth()))
+		|| ((ball.getY() + ball.getSize()) < (rectangle.getY()))
+		|| ((ball.getY() - ball.getSize()) > (rectangle.getY() + rectangle.getHeight()))) {
 			return false;
 		}
 
