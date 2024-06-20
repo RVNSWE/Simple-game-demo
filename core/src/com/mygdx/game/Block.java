@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * @author Katherine Town
  * @version 18/06/2024
  */
-public class Rectangle {
+public class Block {
     /**
      * Declare class attributes.
      */
@@ -24,7 +24,7 @@ public class Rectangle {
      * @param width the width of the object.
      * @param height the height of the object.
      */
-    public Rectangle(int x, int y, int width, int height) {
+    public Block(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;

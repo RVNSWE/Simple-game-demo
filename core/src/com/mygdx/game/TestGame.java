@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.GL20;
 
@@ -24,10 +23,11 @@ public class TestGame extends ApplicationAdapter {
 	 */
 	private ShapeRenderer shape;
 	private Ball ball;
-	private ArrayList<Rectangle> rectangles;
-	private Rectangle paddle;
+	private ArrayList<Block> blocks;
+	private Block paddle;
 	private Random r;
-	private Color colour;
+	boolean collision;
+	boolean sideCollision;
 
 	/**
 	 * Constructor for TestGame. Initialises r as new object of the Random class,
@@ -35,8 +35,7 @@ public class TestGame extends ApplicationAdapter {
 	 */
 	public TestGame() {
 		r = new Random();
-		colour = Color.WHITE;
-		rectangles = new ArrayList<>();
+		blocks = new ArrayList<>();
 	}
 
 	/**
@@ -57,14 +56,14 @@ public class TestGame extends ApplicationAdapter {
 				r.nextInt( 5, 10)); // ySpeed 10px per frame.
 
 		// Create the paddle and bricks.
-		rectangles.add(new Rectangle(0, 10, 100, 10));
-		paddle = rectangles.get(0);
+		blocks.add(new Block(0, 10, 100, 10));
+		paddle = blocks.get(0);
 		paddle.setPaddle();
-		int rectangleWidth = 63;
-		int rectangleHeight = 20;
-		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += rectangleHeight + 10) {
-			for (int x = 0; x < Gdx.graphics.getWidth(); x += rectangleWidth + 10) {
-				rectangles.add(new Rectangle(x, y, rectangleWidth, rectangleHeight));
+		int blockWidth = 63;
+		int blockHeight = 20;
+		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += blockHeight + 10) {
+			for (int x = 0; x < Gdx.graphics.getWidth(); x += blockWidth + 10) {
+				blocks.add(new Block(x, y, blockWidth, blockHeight));
 			}
 		}
 	}
@@ -82,15 +81,15 @@ public class TestGame extends ApplicationAdapter {
 		shape.end(); // Stop drawing.
 
 		shape.begin(ShapeRenderer.ShapeType.Filled);
-		for (Rectangle rectangle : rectangles) {
-			rectangle.update();
-			rectangle.draw(shape);
-			checkCollision(rectangle);
+		for (Block block : blocks) {
+			block.update();
+			block.draw(shape);
+			checkCollision(block);
 		}
-		for (int i = 0; i < rectangles.size(); i++) {
-			Rectangle rectangle = rectangles.get(i);
-			if (rectangle.getDestroyed()) {
-				rectangles.remove(rectangle);
+		for (int i = 0; i < blocks.size(); i++) {
+			Block block = blocks.get(i);
+			if (block.getDestroyed()) {
+				blocks.remove(block);
 				i--;
 			}
 		}
@@ -99,34 +98,49 @@ public class TestGame extends ApplicationAdapter {
 
 	/**
 	 * Check whether the ball has collided with an object. If it collides with a
-	 * brick, break the brick. If it collides with a paddle, bounce off.
+	 * brick, break the brick. If it was a side collision, reverse the x-axis
+	 * speed. If it collides with a paddle, bounce off.
 	 *
-	 * @param rectangle the object to be checked for collision with the ball.
+	 * @param block the object to be checked for collision with the ball.
 	 */
-	public void checkCollision(Rectangle rectangle) {
-		if (collidesWith(rectangle) && rectangle.getPaddle()) {
+	public void checkCollision(Block block) {
+		if (collidesWith(block) && block.getPaddle()) {
 			ball.setYSpeed(-ball.getYSpeed());
 		}
-		else if (collidesWith(rectangle)) {
-			ball.setYSpeed(-ball.getYSpeed());
-			rectangle.setDestroyed();
+		else if (collidesWith(block)) {
+			if (sideCollision) {
+				ball.setYSpeed(-ball.getYSpeed());
+				ball.setXSpeed(-ball.getXSpeed());
+				block.setDestroyed();
+			}
+			else {
+					ball.setYSpeed(-ball.getYSpeed());
+					block.setDestroyed();
+			}
 		}
 	}
 
 	/**
-	 * Check whether the ball has collided with an object.
+	 * Check whether the ball has collided with an object and, if so, whether it
+	 * was a side collision or not.
 	 *
-	 * @param rectangle the object the ball may collide with.
+	 * @param block the object the ball may collide with.
 	 * @return true if a collision has happened and false if not.
 	 */
-	private boolean collidesWith(Rectangle rectangle) {
-		boolean collision = true;
+	private boolean collidesWith(Block block) {
+		sideCollision = false;
 
-		if (((ball.getX() + ball.getSize()) < (rectangle.getX()))
-		|| ((ball.getX() - ball.getSize()) > (rectangle.getX() + rectangle.getWidth()))
-		|| ((ball.getY() + ball.getSize()) < (rectangle.getY()))
-		|| ((ball.getY() - ball.getSize()) > (rectangle.getY() + rectangle.getHeight()))) {
-			return false;
+        collision = (ball.getX() + ball.getSize()) > block.getX()
+                && (ball.getX() - ball.getSize()) < (block.getX() + (block.getWidth() * 1.2))
+                && (ball.getY() + ball.getSize()) > block.getY()
+                && (ball.getY() - ball.getSize()) < (block.getY() + (block.getHeight() * 1.2));
+
+		if (collision
+				&& (ball.getX() + ball.getSize()) > block.getX()
+				&& (ball.getX() + ball.getSize()) < (block.getX() + block.getWidth() * 0.2)
+				&& (ball.getX() - ball.getSize()) < block.getX() + (block.getWidth())
+				&& (ball.getX() - ball.getSize()) > block.getX() + (block.getWidth() * 0.8))  {
+			sideCollision = true;
 		}
 
 		return collision;

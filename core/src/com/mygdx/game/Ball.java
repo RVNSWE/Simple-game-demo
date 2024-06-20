@@ -105,8 +105,28 @@ public class Ball {
 
     /**
      * Set the y-axis speed.
+     *
+     * @param ySpeed the new x-axis speed.
      */
     public void setYSpeed(int ySpeed) {
         this.ySpeed = ySpeed;
+    }
+
+    /**
+     * Get the x-axis speed.
+     *
+     * @return the x-axis speed.
+     */
+    public int getXSpeed() {
+        return xSpeed;
+    }
+
+    /**
+     * Set the x-axis speed.
+     *
+     * @param xSpeed the new x-axis speed.
+     */
+    public void setXSpeed(int xSpeed) {
+        this.xSpeed = xSpeed;
     }
 }
