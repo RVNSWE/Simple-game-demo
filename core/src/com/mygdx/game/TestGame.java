@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.GL20;
+import org.w3c.dom.css.Rect;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -22,10 +24,10 @@ public class TestGame extends ApplicationAdapter {
 	 */
 	private ShapeRenderer shape;
 	private Ball ball;
-	private Paddle paddle;
+	private Rectangle paddle;
 	private Random r;
 	Color colour;
-	ArrayList<Brick> bricks;
+	ArrayList<Rectangle> bricks;
 
 	/**
 	 * Constructor for TestGame. Initialises r as new object of the Random class,
@@ -43,22 +45,27 @@ public class TestGame extends ApplicationAdapter {
 	 */
 	@Override
 	public void create () {
-		// Initialise shape as a new ShapeRenderer object.
+		// Create shape as a new ShapeRenderer object.
 		shape = new ShapeRenderer();
-		// Initialise ball with:
+
+		// Create the ball.
 		ball = new Ball((Gdx.graphics.getWidth() / 2), // x-origin in the centre of the window,
 				(Gdx.graphics.getWidth() / 2), // y-origin in the centre of the window,
 				20, // a radius of 20px,
 				r.nextInt(-10, 10), // xSpeed between -10 and 10px per frame,
 				r.nextInt(-10, 10)); // ySpeed between -10 and 10px per frame.
-		// Initialise the paddle with parameters: x=0, y=10, width=100px and height=10px.
-		paddle = new Paddle(0, 10, 100, 10);
+
+		// Create the paddle.
+		paddle = new Rectangle(0, 10, 100, 10);
+		paddle.setPaddle();
+
+		// Create the bricks.
 		bricks = new ArrayList<>();
 		int brickWidth = 63;
 		int brickHeight = 20;
 		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += brickHeight + 10) {
 			for (int x = 0; x < Gdx.graphics.getWidth(); x += brickWidth + 10) {
-				bricks.add(new Brick(x, y, brickWidth, brickHeight));
+				bricks.add(new Rectangle(x, y, brickWidth, brickHeight));
 			}
 		}
 	}
@@ -81,26 +88,21 @@ public class TestGame extends ApplicationAdapter {
 		paddle.draw(shape);
 		shape.end();
 
-		int brickWidth = 63;
-		int brickHeight = 20;
 		shape.begin(ShapeRenderer.ShapeType.Filled);
-		for (int y = Gdx.graphics.getHeight()/2; y < Gdx.graphics.getHeight(); y += brickHeight + 10) {
-			for (int x = 0; x < Gdx.graphics.getWidth(); x += brickWidth + 10) {
-				bricks.add(new Brick(x, y, brickWidth, brickHeight));
-			}
-		}
-		for (Brick brick : bricks) {
+		for (Rectangle brick : bricks) {
 			brick.draw(shape);
 		}
 		shape.end();
 	}
 
 	/**
+	 * Check whether the ball has collided with an object. If it collides with a
+	 * brick, break the brick. If it collides with a paddle, bounce off.
 	 *
-	 * @param paddle
+	 * @param object the object to be checked for collision with the ball.
 	 */
-	public void checkCollision(Paddle paddle) {
-		if(collidesWith(paddle)){
+	public void checkCollision(Rectangle object) {
+		if(collidesWith(object)){
 			ball.setYSpeed(-ball.getYSpeed());
 		}
 		else{
@@ -109,25 +111,24 @@ public class TestGame extends ApplicationAdapter {
 	}
 
 	/**
-	 * Generate a random number greater than 0.5 if the paddle collides with
-	 * the ball.
+	 * Check whether the ball has collided with an object.
 	 *
-	 * @param paddle the paddle.
+	 * @param object the object the ball may collide with.
 	 * @return true if a collision has happened and false if not.
 	 */
-	private boolean collidesWith(Paddle paddle) {
+	private boolean collidesWith(Rectangle object) {
 		boolean collision = true;
 
-		if ((ball.getX() + ball.getSize()) < (paddle.getX())) {
+		if ((ball.getX() + ball.getSize()) < (object.getX())) {
 			return false;
 		}
-		if ((ball.getX() - ball.getSize()) > (paddle.getX() + paddle.getWidth())) {
+		if ((ball.getX() - ball.getSize()) > (object.getX() + object.getWidth())) {
 			return false;
 		}
-		if ((ball.getY() + ball.getSize()) < (paddle.getY())) {
+		if ((ball.getY() + ball.getSize()) < (object.getY())) {
 			return false;
 		}
-		if ((ball.getY() - ball.getSize()) > (paddle.getY() + paddle.getHeight())) {
+		if ((ball.getY() - ball.getSize()) > (object.getY() + object.getHeight())) {
 			return false;
 		}
 

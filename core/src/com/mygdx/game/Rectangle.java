@@ -9,14 +9,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * @author Katherine Town
  * @version 18/06/2024
  */
-public class Paddle {
+public class Rectangle {
     /**
      * Declare class attributes.
      */
-    private float x; // An x position.
-    private float y; // A y position.
-    private float width; // The width of a shape in pixels.
-    private float height; // The height of a shape in pixels.
+    private int x,y,width,height;
+    private boolean paddleStatus;
 
     /**
      * Constructor for Paddle objects. Sets initial object attribute values.
@@ -26,11 +24,19 @@ public class Paddle {
      * @param width the width of the object.
      * @param height the height of the object.
      */
-    public Paddle(float x, float y, float width, float height) {
+    public Rectangle(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        paddleStatus = false;
+    }
+
+    /**
+     * Set the current Rectangle object as the paddle.
+     */
+    public void setPaddle() {
+        paddleStatus = true;
     }
 
     /**

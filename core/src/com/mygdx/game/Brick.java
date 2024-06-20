@@ -14,7 +14,7 @@ public class Brick {
     /**
      * Declare class attributes.
      */
-    int x,y,width,height;
+    private int x,y,width,height;
 
     /**
      * Constructor for brick objects.
