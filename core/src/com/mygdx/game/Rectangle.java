@@ -14,7 +14,7 @@ public class Rectangle {
      * Declare class attributes.
      */
     private int x,y,width,height;
-    private boolean paddleStatus;
+    private boolean paddle, destroyed;
 
     /**
      * Constructor for Paddle objects. Sets initial object attribute values.
@@ -29,14 +29,40 @@ public class Rectangle {
         this.y = y;
         this.width = width;
         this.height = height;
-        paddleStatus = false;
+        paddle = false;
+        destroyed = false;
     }
 
     /**
      * Set the current Rectangle object as the paddle.
      */
     public void setPaddle() {
-        paddleStatus = true;
+        paddle = true;
+    }
+
+    /**
+     * Get whether the current Rectangle object is the paddle.
+     *
+     * @return true if it is the paddle, false if it is not.
+     */
+    public boolean getPaddle() {
+        return paddle;
+    }
+
+    /**
+     * Set the current Rectangle object as destroyed.
+     */
+    public void setDestroyed() {
+        destroyed = true;
+    }
+
+    /**
+     * Check whether the rectangle has been destroyed.
+     *
+     * @return true if it has been destroyed, false if it has not.
+     */
+    public boolean getDestroyed() {
+        return destroyed;
     }
 
     /**
@@ -44,7 +70,9 @@ public class Rectangle {
      * x position of the cursor.
      */
     public void update() {
-        x = Gdx.input.getX() - (width / 2);
+        if (paddle) {
+            x = Gdx.input.getX() - (width / 2);
+        }
     }
 
     /**

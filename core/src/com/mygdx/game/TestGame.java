@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.GL20;
-import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,10 +23,10 @@ public class TestGame extends ApplicationAdapter {
 	 */
 	private ShapeRenderer shape;
 	private Ball ball;
+	private ArrayList<Rectangle> rectangles;
 	private Rectangle paddle;
 	private Random r;
-	Color colour;
-	ArrayList<Rectangle> bricks;
+	private Color colour;
 
 	/**
 	 * Constructor for TestGame. Initialises r as new object of the Random class,
@@ -36,6 +35,7 @@ public class TestGame extends ApplicationAdapter {
 	public TestGame() {
 		r = new Random();
 		colour = Color.WHITE;
+		rectangles = new ArrayList<>();
 	}
 
 	/**
@@ -50,22 +50,20 @@ public class TestGame extends ApplicationAdapter {
 
 		// Create the ball.
 		ball = new Ball((Gdx.graphics.getWidth() / 2), // x-origin in the centre of the window,
-				(Gdx.graphics.getWidth() / 2), // y-origin in the centre of the window,
+				30, // y-origin in the centre of the window,
 				20, // a radius of 20px,
 				r.nextInt(-10, 10), // xSpeed between -10 and 10px per frame,
-				r.nextInt(-10, 10)); // ySpeed between -10 and 10px per frame.
+				r.nextInt( 10)); // ySpeed 10px per frame.
 
-		// Create the paddle.
-		paddle = new Rectangle(0, 10, 100, 10);
+		// Create the paddle and bricks.
+		rectangles.add(new Rectangle(0, 10, 100, 10));
+		paddle = rectangles.get(0);
 		paddle.setPaddle();
-
-		// Create the bricks.
-		bricks = new ArrayList<>();
-		int brickWidth = 63;
-		int brickHeight = 20;
-		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += brickHeight + 10) {
-			for (int x = 0; x < Gdx.graphics.getWidth(); x += brickWidth + 10) {
-				bricks.add(new Rectangle(x, y, brickWidth, brickHeight));
+		int rectangleWidth = 63;
+		int rectangleHeight = 20;
+		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += rectangleHeight + 10) {
+			for (int x = 0; x < Gdx.graphics.getWidth(); x += rectangleWidth + 10) {
+				rectangles.add(new Rectangle(x, y, rectangleWidth, rectangleHeight));
 			}
 		}
 	}
@@ -79,18 +77,21 @@ public class TestGame extends ApplicationAdapter {
 
 		ball.update(); // Update the state and location of the ball.
 		shape.begin(ShapeRenderer.ShapeType.Filled); // Begin drawing.
-		checkCollision(paddle); // Check whether the ball and paddle have collided.
 		ball.draw(shape); // Draw the ball.
 		shape.end(); // Stop drawing.
 
-		paddle.update();
 		shape.begin(ShapeRenderer.ShapeType.Filled);
-		paddle.draw(shape);
-		shape.end();
-
-		shape.begin(ShapeRenderer.ShapeType.Filled);
-		for (Rectangle brick : bricks) {
-			brick.draw(shape);
+		for (Rectangle rectangle : rectangles) {
+			rectangle.update();
+			rectangle.draw(shape);
+			checkCollision(rectangle);
+		}
+		for (int i = 0; i < rectangles.size(); i++) {
+			Rectangle rectangle = rectangles.get(i);
+			if (rectangle.getDestroyed()) {
+				rectangles.remove(rectangle);
+				i--;
+			}
 		}
 		shape.end();
 	}
@@ -99,36 +100,37 @@ public class TestGame extends ApplicationAdapter {
 	 * Check whether the ball has collided with an object. If it collides with a
 	 * brick, break the brick. If it collides with a paddle, bounce off.
 	 *
-	 * @param object the object to be checked for collision with the ball.
+	 * @param rectangle the object to be checked for collision with the ball.
 	 */
-	public void checkCollision(Rectangle object) {
-		if(collidesWith(object)){
+	public void checkCollision(Rectangle rectangle) {
+		if (collidesWith(rectangle) && rectangle.getPaddle()) {
 			ball.setYSpeed(-ball.getYSpeed());
 		}
-		else{
-			colour = Color.WHITE;
+		else if (collidesWith(rectangle)) {
+			ball.setYSpeed(-ball.getYSpeed());
+			rectangle.setDestroyed();
 		}
 	}
 
 	/**
 	 * Check whether the ball has collided with an object.
 	 *
-	 * @param object the object the ball may collide with.
+	 * @param rectangle the object the ball may collide with.
 	 * @return true if a collision has happened and false if not.
 	 */
-	private boolean collidesWith(Rectangle object) {
+	private boolean collidesWith(Rectangle rectangle) {
 		boolean collision = true;
 
-		if ((ball.getX() + ball.getSize()) < (object.getX())) {
+		if ((ball.getX() + ball.getSize()) < (rectangle.getX())) {
 			return false;
 		}
-		if ((ball.getX() - ball.getSize()) > (object.getX() + object.getWidth())) {
+		if ((ball.getX() - ball.getSize()) > (rectangle.getX() + rectangle.getWidth())) {
 			return false;
 		}
-		if ((ball.getY() + ball.getSize()) < (object.getY())) {
+		if ((ball.getY() + ball.getSize()) < (rectangle.getY())) {
 			return false;
 		}
-		if ((ball.getY() - ball.getSize()) > (object.getY() + object.getHeight())) {
+		if ((ball.getY() - ball.getSize()) > (rectangle.getY() + rectangle.getHeight())) {
 			return false;
 		}
 
