@@ -99,7 +99,7 @@ public class TestGame extends ApplicationAdapter {
 	/**
 	 * Check whether the ball has collided with an object. If it collides with a
 	 * brick, break the brick. If it was a side collision, reverse the x-axis
-	 * speed. If it collides with a paddle, bounce off.
+	 * at a random speed.. If it collides with a paddle, bounce off.
 	 *
 	 * @param block the object to be checked for collision with the ball.
 	 */
@@ -108,7 +108,7 @@ public class TestGame extends ApplicationAdapter {
 			ball.setYSpeed(-ball.getYSpeed());
 			if (sideCollision) {
 				if (ball.getX() + ball.getSize() < block.getX() + (block.getWidth() * 0.5)) {
-					ball.setXSpeed(r.nextInt(-10, 5));
+					ball.setXSpeed(r.nextInt(-10, -5));
 				}
 				else {
 					ball.setXSpeed(r.nextInt(5, 10));
