@@ -104,18 +104,32 @@ public class TestGame extends ApplicationAdapter {
 	 * @param block the object to be checked for collision with the ball.
 	 */
 	public void checkCollision(Block block) {
-		if (collidesWith(block) && block.getPaddle()) {
+		if (collidesWith(block)) {
 			ball.setYSpeed(-ball.getYSpeed());
-		}
-		else if (collidesWith(block)) {
 			if (sideCollision) {
-				ball.setYSpeed(-ball.getYSpeed());
-				ball.setXSpeed(-ball.getXSpeed());
-				block.setDestroyed();
+				if (ball.getX() + ball.getSize() < block.getX() + (block.getWidth() * 0.5)) {
+					ball.setXSpeed(r.nextInt(-10, 5));
+				}
+				else {
+					ball.setXSpeed(r.nextInt(5, 10));
+				}
+			}
+			else if (ball.getX() < block.getX() + (block.getWidth() * 0.25)) {
+				ball.setXSpeed(ball.getXSpeed() + 3);
+			}
+			else if (ball.getX() > block.getX() + (block.getWidth() * 0.75)) {
+				ball.setXSpeed(ball.getXSpeed() - 3);
 			}
 			else {
-					ball.setYSpeed(-ball.getYSpeed());
-					block.setDestroyed();
+				if (ball.getYSpeed() < 10) {
+					ball.setYSpeed(ball.getYSpeed() + 1);
+				}
+			}
+			if (collidesWith(block) && !block.getPaddle()) {
+				block.setDestroyed();
+				if (ball.getYSpeed() > 5) {
+					ball.setYSpeed(ball.getYSpeed() + 1);
+				}
 			}
 		}
 	}
@@ -130,18 +144,15 @@ public class TestGame extends ApplicationAdapter {
 	private boolean collidesWith(Block block) {
 		sideCollision = false;
 
-        collision = (ball.getX() + ball.getSize()) > block.getX()
-                && (ball.getX() - ball.getSize()) < (block.getX() + (block.getWidth() * 1.2))
-                && (ball.getY() + ball.getSize()) > block.getY()
-                && (ball.getY() - ball.getSize()) < (block.getY() + (block.getHeight() * 1.2));
+		sideCollision = (ball.getX() + ball.getSize() > block.getX()
+				&& ball.getX() + ball.getSize() < block.getX() + (block.getWidth() * 0.1))
+				|| (ball.getX() - ball.getSize() < block.getX() + block.getWidth()
+				&& ball.getX() - ball.getSize() > block.getX() + (block.getWidth() * 0.9));
 
-		if (collision
-				&& (ball.getX() + ball.getSize()) > block.getX()
-				&& (ball.getX() + ball.getSize()) < (block.getX() + block.getWidth() * 0.2)
-				&& (ball.getX() - ball.getSize()) < block.getX() + (block.getWidth())
-				&& (ball.getX() - ball.getSize()) > block.getX() + (block.getWidth() * 0.8))  {
-			sideCollision = true;
-		}
+        collision = ball.getX() + ball.getSize() > block.getX()
+                && ball.getX() - ball.getSize() < block.getX() + block.getWidth()
+                && ball.getY() + ball.getSize() > block.getY()
+                && ball.getY() - ball.getSize() < block.getY() + block.getHeight();
 
 		return collision;
 	}
