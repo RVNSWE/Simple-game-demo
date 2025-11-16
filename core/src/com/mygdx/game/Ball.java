@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * A ball that moves across the screen and bounces off each edge of the screen
  * to move in the opposite direction.
  *
- * @author Katherine Town
+ * @author K Town
  * @version 18/06/2024
  */
 public class Ball {
