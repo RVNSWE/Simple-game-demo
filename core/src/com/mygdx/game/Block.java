@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 /**
  * A rectangular paddle that adjusts its x-position to that of the cursor.
  *
- * @author Katherine Town
+ * @author K Town
  * @version 18/06/2024
  */
 public class Block {
