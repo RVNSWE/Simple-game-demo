@@ -14,7 +14,7 @@ import java.util.Random;
  * Project development after implementation of collision detection and brick
  * destruction was entirely the work of the author.
  *
- * @author Katherine Town
+ * @author K Town
  * @version 18/06/2024
  */
 public class TestGame extends ApplicationAdapter {
